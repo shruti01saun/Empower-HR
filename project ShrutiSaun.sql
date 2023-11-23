@@ -1,6 +1,5 @@
 use project;
-select *from hrdata;
--- creating new table
+select * from hrdata;
 CREATE TABLE newhrdata AS
 SELECT
     Employee_ID,
@@ -29,7 +28,9 @@ SELECT
     Satisfaction_Score,
     Last_Promotion_Date
 FROM hrdata;
+
 -- data cleaning and prepration
+
 UPDATE newhrdata
 SET Salary = NULL
 WHERE Salary = '';
@@ -88,7 +89,6 @@ UPDATE newhrdata
 SET training_hours = round((select avg(training_hours) from hrdata where training_hours is not null))
 WHERE training_hours IS NULL;
 
--- position wise
 SELECT
     Position,
     COUNT(*) AS TotalEmp,
@@ -97,9 +97,8 @@ SELECT
     (SUM(CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END) / COUNT(*)) * 100 AS AttritionRate_yes,
     (SUM(CASE WHEN Attrition = 'No' THEN 1 ELSE 0 END) / COUNT(*)) * 100 AS AttritionRate_No
 from newhrdata
-Group by Position;
-
--- department wise
+Group by Position
+	
 SELECT
      Department,
     COUNT(*) AS DepartmentEmployeeCount,
@@ -108,7 +107,6 @@ SELECT
 FROM newhrdata
 GROUP BY Department;
 
--- performance rating
 SELECT
     Performance_rating,
     COUNT(*) AS TotalEmp,
@@ -119,7 +117,6 @@ SELECT
 from newhrdata
 Group by Performance_rating;
 
--- years of service
 SELECT
     years_of_service,
     COUNT(*) AS TotalEmp,
@@ -130,7 +127,6 @@ SELECT
 from newhrdata
 Group by years_of_service;
  
- -- satisfaction score
  SELECT
     satisfaction_score,
     COUNT(*) AS TotalEmp,
@@ -141,7 +137,6 @@ Group by years_of_service;
 from newhrdata
 Group by satisfaction_score;
 
--- salary 
  SELECT
     SalaryGroup,
     COUNT(*) AS TotalEmp,
@@ -152,7 +147,6 @@ Group by satisfaction_score;
 from newhrdata
 Group by SalaryGroup;
 
--- years of service,promotion
 SELECT
     years_of_service,
     sum(case when attrition='Yes' then 1 else 0 end )as Attrition,
@@ -161,7 +155,6 @@ SELECT
 from newhrdata
 group by years_of_service;
 
-    -- overall
 SELECT
     CASE WHEN Attrition = 'Yes' THEN 'Attrition' ELSE 'No Attrition' END AS AttritionStatus,
     count(*) as TotalEmp,
@@ -174,7 +167,6 @@ SELECT
 FROM newhrdata
 GROUP BY AttritionStatus;
 
--- training hours
 SELECT
 	training_hours,
     count(*) as TotalEmp,
@@ -183,7 +175,6 @@ SELECT
 from newhrdata
 Group by training_hours;
 
--- Query to analyze the effectiveness of training programs
 SELECT
     Training_Hours,
     AVG(Satisfaction_Score) AS AvgSatisfactionScore,
@@ -205,19 +196,16 @@ Sum(case when promotion='Yes' then 1 else 0 end) as Promotion,
 FROM newhrdata
 group by Training_Hours ;
 
--- WHERE Training_Hours > 0 AND Performance_Rating >= 4 AND Promotion = 'No'
 SELECT Position, count(*) as TotalEmp, 
 round(AVG(Training_Hours),3) AS AvgTrainingHours
 FROM newhrdata
 group by Position;
 
--- yos
 SELECT Years_of_service, count(*) as TotalEmp, 
 round(AVG(Training_Hours),3) AS AvgTrainingHours
 FROM newhrdata
 group by Years_of_service;
 
--- wh
 SELECT satisfaction_score, count(*) as TotalEmp, 
 round(AVG(Training_Hours),3) AS AvgTrainingHours
 
